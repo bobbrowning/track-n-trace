@@ -45,7 +45,7 @@
                proprity order. If omitted this is assumed to be
                 min,norm,verbose,silly
    
-   examples
+   Examples
    -------
                norm,myprog.js,192.168.0.12,trace.log  
                min,norm,max
@@ -68,8 +68,9 @@
    trace.log() -  Normal trace call
 
 
-                trace.init
-                ----------
+   trace.init
+   ----------
+
       To be called once per transaction only
       parameters:
                - request object 
@@ -79,8 +80,9 @@
             trace.init(req,'./');
 
 
-                trace.log
-                ---------
+   trace.log
+   ---------
+
     trace.log (item1,item2,... {options})
     Options are 
        level: (if omitted 'norm' is assumed)     
@@ -94,11 +96,20 @@
         trace.log('Name of table: ',tablename,{level:'min'}); 
         trace.log('start of transaction',{level:'min',break:'#'})  
   
-   output
+   Output
    ----- 
-    entry point   ->  n.nnn seconds 
+   entry point   ->  n.nnn seconds 
    followed by data.
   
   The entry point is the name and line number of the call
   in the calling program.  The time is the time since 
   trace.init() was called. 
+
+  The data is as listed in the function call. If an item 
+  is an object it is preceded by 
+  Object>>> 
+  each item in the object listed on a separate line.
+  name:value
+  if that object conains another it is preceded by 
+   Innerobject>>>
+
