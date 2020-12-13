@@ -17,8 +17,9 @@
    and there will be no trace.
   
 ###   Line 1
-
+```
      level,filename,ip,logfile
+```
    
      1. **Level:** Trace.log traces if the level in the call is at or below the priority of the level in the control file. Default levels in priority order are: [min,norm,verbose,silly] but these can be changed in line 2(below).
     2. **file name:** Name of the file to be traced. If omitted the whole system will be traced
