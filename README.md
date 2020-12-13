@@ -4,7 +4,7 @@
 
    Trace progress through a Node program.  Trace statements
    can be added at any point in the code to log important  
-   data.  Features:
+   data.  Features
 
     1. Traces can be turned on or off in real time under control of a small text file. You don't need to restart.  So keep       trace statements in the code to help diagnose problems       in production. Because.....  
 
