@@ -24,7 +24,7 @@ level,filename,ip,logfile
 1. **Level:** Trace.log traces if the level in the call is at or below the priority of the level in the control file. Default levels in priority order are: [min,norm,verbose,silly] but these can be changed in line 2(below).
 2. **file name:** Name of the file to be traced. If omitted the whole system will be traced
 3. **IP address:** Trace only honoured for requests from that IP. If omitted, any IP.
-4.  **Log File **  -  Output to this file. If omitted to the console  
+4. **Log File**  -  Output to this file. If omitted to the console  
 
 ###  Line 2
 
