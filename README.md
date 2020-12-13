@@ -18,8 +18,8 @@ Trace
 
     Traces can be sent to the console or a text file.
  
-                  Control file
-                  -----------
+   Control file
+   -----------
    This is a csv file. Data items are:
   
    Line 1
