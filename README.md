@@ -6,21 +6,16 @@
    can be added at any point in the code to log important  
    data.  Features:
 
-    * Traces can be turned on or off in real time under control  
-      of a small text file. You don't need to restart.  So keep 
-      trace statements in the code to help diagnose problems 
-      in production. Because.....  
+    1. Traces can be turned on or off in real time under control of a small text file. You don't need to restart.  So keep       trace statements in the code to help diagnose problems       in production. Because.....  
 
-    * Traces can be limited to requests from a given
-      IP address - so can be used in a live system without  
-      interfering with other users transactions.
+    2. Traces can be limited to requests from a given      IP address - so can be used in a live system without        interfering with other users transactions.
 
-    * Traces can be limited to a one javascript file.
-      or the whole system.
+    3. Traces can be limited to a one javascript file      or the whole system.
 
-    * Traces can be sent to the console or a text file.
+    4. Traces can be sent to the console or a text file.
  
 ##   Control file
+
   This is a csv file. Data items are as follows. All are optional 
    but omit the level or put in a level that is not in the priority list
    and there will be no trace.
@@ -91,11 +86,12 @@
     3.  anything else is treated as a data item. So {foo:'bar'}  is the same as '\nfoo','bar'
 
 ###      examples:  
-      ```
+  ```
         trace.log('Name of table: ',tablename);     // assumes level='norm'
         trace.log('Name of table: ',tablename,{level:'min'}); 
         trace.log('start of transaction',{level:'min',break:'#'})  
   ```
+
 ##   Output
    
    entry point   ->  n.nnn seconds 
