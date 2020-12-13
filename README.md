@@ -1,6 +1,7 @@
  
 
 # Trace
+
    Trace progress through a Node program.  Trace statements
    can be added at any point in the code to log important  
    data.  Features:
@@ -25,6 +26,7 @@
    and there will be no trace.
   
 ###   Line 1
+
      level,filename,ip,logfile
    
    Level: Trace.log traces if the level in the call is at or below the priority of the level in the control file. Default levels in priority order are: [min,norm,verbose,silly] but these can be changed in line 2(below).
@@ -36,6 +38,7 @@
   Log File   -  Output to this file. If omitted to the console  
 
 ###  Line 2
+
     On the lext line you can add a list of levels in priority order. If omitted the default values above are used.
    
 ###   Examples
@@ -83,18 +86,16 @@
 
     trace.log (item1,item2,... {options})
     Options are 
-       level: (if omitted 'norm' is assumed)     
-       break: 'x'  draws a line of 40 x the entered character
-                   to help locate in the output.
-         
-       anything else is treated as a data item. So 
-       {foo:'bar'}  is the same as '\nfoo','bar'
+    1.   level: (if omitted 'norm' is assumed)     
+    2.   break: 'x'  draws a line of 40 x the entered character to help locate in the output.
+    3.  anything else is treated as a data item. So {foo:'bar'}  is the same as '\nfoo','bar'
 
 ###      examples:  
+      ```
         trace.log('Name of table: ',tablename);     // assumes level='norm'
         trace.log('Name of table: ',tablename,{level:'min'}); 
         trace.log('start of transaction',{level:'min',break:'#'})  
-  
+  ```
 ##   Output
    
    entry point   ->  n.nnn seconds 
@@ -124,9 +125,10 @@
   let foo='hello';
   let bar='world';
   trace.log(foo,bar);
+ ```
   when the request originated at a browser at 192.168.0.12 gives on the console
-  ```
-  ```
+ 
+   ```
   **** example.js:6:11 -> 0.001 seconds ****
   hello world
 ```
