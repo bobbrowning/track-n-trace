@@ -23,30 +23,22 @@ Trace
    Control file
    -----------
    This is a csv file. Data items are as follows. All are optional 
-   but omit the level or put is a level that is not in the priority list
+   but omit the level or put in a level that is not in the priority list
    and there will be no trace.
   
    Line 1
    ------
-   Level -      Trace.log traces if the level in the call is  
-                at or below the priority of the level  
-                in the control file. Default levels in 
-                priority order are: min,norm,verbose,silly
-                but these can be changed in line 2 (below).
+   Level: Trace.log traces if the level in the call is at or below the priority of the level in the control file. Default levels in priority order are: [min,norm,verbose,silly] but these can be changed in line 2(below).
                 
-   file name -  Name of the file to be traced. If omitted the 
-                whole system will be traced
+   file name: Name of the file to be traced. If omitted the whole system will be traced
 
-  IP address -  Trace only honoured for requests from that IP
-                If omitted, any IP.
+  IP address: Trace only honoured for requests from that IP. If omitted, any IP.
 
   Log File   -  Output to this file. If omitted to the console  
 
   Line 2
   ------
-  Levels     -  On the lext line you can add a list of levels in 
-               proprity order. If omitted this is assumed to be
-                min,norm,verbose,silly
+  On the lext line you can add a list of levels in priority order. If omitted the default values above are used.
    
    Examples
    -------
