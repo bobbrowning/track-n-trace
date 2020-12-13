@@ -28,6 +28,8 @@ Trace
   
    Line 1
    ------
+   level,filename,ip,logfile
+   
    Level: Trace.log traces if the level in the call is at or below the priority of the level in the control file. Default levels in priority order are: [min,norm,verbose,silly] but these can be changed in line 2(below).
                 
    file name: Name of the file to be traced. If omitted the whole system will be traced
@@ -69,20 +71,21 @@ Trace
    trace.log() -  Normal trace call
 
 
-   trace.init
-   ----------
+   trace.init(req,dir)
+   ------------------
 
       To be called once per transaction only
       parameters:
                - request object 
                - directory of trace control file
 
-      e.g.  let trace=require('trace');
+          example:
+            let trace=require('trace');
             trace.init(req,'./');
 
 
-   trace.log
-   ---------
+   trace.log(item1,item2,... {options})
+   -----------------------------------
 
     trace.log (item1,item2,... {options})
     Options are 
@@ -93,7 +96,7 @@ Trace
        anything else is treated as a data item. So 
        {foo:'bar'}  is the same as '\nfoo','bar'
 
-      example:  
+      examples:  
         trace.log('Name of table: ',tablename);     // assumes level='norm'
         trace.log('Name of table: ',tablename,{level:'min'}); 
         trace.log('start of transaction',{level:'min',break:'#'})  
@@ -115,14 +118,15 @@ Trace
   if that object conains another it is preceded by 
    Innerobject>>>
 
-Example of use
+Example of use 
 --------------
     control file 
     
     norm,,192.168.0.12 
 
 
-  // example.js
+  example.js
+  ----------
   let trace = require('trace');
   await trace.init(req,'./');    // req is the request object    ./ is the location of the control file
   let foo='hello';
