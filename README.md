@@ -1,7 +1,7 @@
  
 
-                      trace
-                      -----
+Trace
+-----
    Trace progress through a program.  Trace statements
    can be added at any point in the code to log important  
    data.  Features:
