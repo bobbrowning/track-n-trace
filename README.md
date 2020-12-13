@@ -1,7 +1,6 @@
  
 
-Trace
------
+# Trace
    Trace progress through a Node program.  Trace statements
    can be added at any point in the code to log important  
    data.  Features:
@@ -20,15 +19,13 @@ Trace
 
     * Traces can be sent to the console or a text file.
  
-   Control file
-   -----------
-   This is a csv file. Data items are as follows. All are optional 
+##   Control file
+  This is a csv file. Data items are as follows. All are optional 
    but omit the level or put in a level that is not in the priority list
    and there will be no trace.
   
-   Line 1
-   ------
-   level,filename,ip,logfile
+###   Line 1
+     level,filename,ip,logfile
    
    Level: Trace.log traces if the level in the call is at or below the priority of the level in the control file. Default levels in priority order are: [min,norm,verbose,silly] but these can be changed in line 2(below).
                 
@@ -38,12 +35,10 @@ Trace
 
   Log File   -  Output to this file. If omitted to the console  
 
-  Line 2
-  ------
-  On the lext line you can add a list of levels in priority order. If omitted the default values above are used.
+###  Line 2
+    On the lext line you can add a list of levels in priority order. If omitted the default values above are used.
    
-   Examples
-   -------
+###   Examples
                norm,myprog.js,192.168.0.12,trace.log  
                min,norm,max
                
@@ -64,16 +59,15 @@ Trace
                ,,,   
                (no trace (or delete/rename the file))
 
-  Functions 
-  ---------
-   trace.init() - called once per request only.  Reads the  
+##  Functions 
+  
+     trace.init() - called once per request only.  Reads the  
                   text file and sets up local variables.
    trace.log() -  Normal trace call
 
 
-   trace.init(req,dir)
-   ------------------
-
+###   trace.init(req,dir)
+   
       To be called once per transaction only
       parameters:
                - request object 
@@ -84,8 +78,8 @@ Trace
             trace.init(req,'./');
 
 
-   trace.log(item1,item2,... {options})
-   -----------------------------------
+###  trace.log(item1,item2,... {options})
+   
 
     trace.log (item1,item2,... {options})
     Options are 
@@ -96,13 +90,13 @@ Trace
        anything else is treated as a data item. So 
        {foo:'bar'}  is the same as '\nfoo','bar'
 
-      examples:  
+###      examples:  
         trace.log('Name of table: ',tablename);     // assumes level='norm'
         trace.log('Name of table: ',tablename,{level:'min'}); 
         trace.log('start of transaction',{level:'min',break:'#'})  
   
-   Output
-   ----- 
+##   Output
+   
    entry point   ->  n.nnn seconds 
    followed by data.
   
@@ -118,25 +112,23 @@ Trace
   if that object conains another it is preceded by 
    Innerobject>>>
 
-Example of use 
---------------
-    control file 
-    
-    norm,,192.168.0.12 
+## Example of use 
+
+ control file =  norm,,192.168.0.12 
 
 
   example.js
-  ----------
+  ```
   let trace = require('trace');
   await trace.init(req,'./');    // req is the request object    ./ is the location of the control file
   let foo='hello';
   let bar='world';
   trace.log(foo,bar);
-
   when the request originated at a browser at 192.168.0.12 gives on the console
-  
+  ```
+  ```
   **** example.js:6:11 -> 0.001 seconds ****
   hello world
-
+```
 
 
