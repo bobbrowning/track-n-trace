@@ -28,7 +28,7 @@ level,filename,ip,logfile
 
 ###  Line 2
 
-    On the lext line you can add a list of levels in priority order. If omitted the default values above are used.
+On the lext line you can add a list of levels in priority order. If omitted the default values above are used.
    
 ###   Examples
                norm,myprog.js,192.168.0.12,trace.log  
@@ -53,19 +53,19 @@ level,filename,ip,logfile
 
 ##  Functions 
   
-     trace.init() - called once per request only.  Reads the  
+ trace.init() - called once per request only.  Reads the  
                   text file and sets up local variables.
-   trace.log() -  Normal trace call
+ trace.log() -  Normal trace call
 
 
 ###   trace.init(req,dir)
    
-      To be called once per transaction only
-      parameters:
-               - request object 
-               - directory of trace control file
+ To be called once per transaction only
+ parameters:
+* request object 
+* directory of trace control file
 
-          example:
+ example:
             let trace=require('trace');
             trace.init(req,'./');
 
