@@ -1,6 +1,6 @@
  
 
-# Trace
+# Track-n-Trace
 
 Trace progress through a Node program.  Trace statements    can be added at any point in the code to log important      data.  A bit like console.log but with very useful enhancements:
 
