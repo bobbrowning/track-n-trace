@@ -92,7 +92,7 @@ trace.log (item1,item2,... {options})
 Options are 
 1.   level: (if omitted 'norm' is assumed)     
 2.   break: 'x'  draws a line of 40 x the entered character to help locate in the output.
-3.  anything else is treated as a data item. So {foo:'bar'}  is the same as '\nfoo','bar'
+3.  anything else is treated as a data item. So {foo:'bar'}  is the same as '\nfoo',':','bar'
 
 ###      examples:  
   ```
@@ -137,8 +137,3 @@ Options are
   **** example.js:6:11 -> 0.001 seconds ****
   hello world
 ```
-
-```
-  trace.log(foo,bar {level:'verbose'});
-```
-Is the same but the output is only listed if the control file contains 'verbose' or below.
