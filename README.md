@@ -4,17 +4,24 @@
 
    Trace progress through a Node program.  Trace statements
    can be added at any point in the code to log important  
-   data.  
-  1. Traces can be turned on or off in real time under control of a small text file. You don't need to restart.  So keep       trace statements in the code to help diagnose problems       in production. Because.....  
-  2. Traces can be limited to requests from a given      IP address - so can be used in a live system without        interfering with other users transactions.
-  3. Traces can be limited to a one javascript file      or the whole system.
-  4. Traces can be sent to the console or a text file.
+   data.  A bit like console.log but with very useful enhancements:
+  1. Different levels of tracing means that you can list only important steps or every trace call.  There is a default list of levels but you can define your own. 
+  2.Traces can be turned on or off in real time under control of a small text file. You don't need to restart.  So keep       trace statements in the code to help diagnose problems       in production. Because.....  
+  3. Traces can be limited to requests from a given      IP address - so can be used in a live system without        interfering with other users transactions.
+  4. Traces can be limited to a one javascript code file      or the whole system.
+  5. Traces can be sent to the console or a text file.
  
 ##   Control file
 
   This is a csv file. Data items are as follows. All are optional 
    but omit the level or put in a level that is not in the priority list
    and there will be no trace.
+
+   The only essential item is the level. Most of the time the text file will just contain one word, e.g. 
+
+   norm
+
+   Fo normal level of tracing. To switch traces off  just delete or rename the file. But for finer control you have a number of options, from outputting every trace call in your system down to just one single call.
   
 ###   Line 1
 ```
@@ -22,34 +29,41 @@ level,filename,ip,logfile
 ```
 
 1. **Level:** Trace.log traces if the level in the call is at or below the priority of the level in the control file. Default levels in priority order are: *min,norm,verbose,silly* but these can be changed in line 2(below).
-2. **file name:** Name of the file to be traced. If omitted the whole system will be traced
-3. **IP address:** Trace only honoured for requests from that IP. If omitted, any IP.
-4. **Log File**  -  Output to this file. If omitted to the console  
+2. **file name:** Name of the javascript file to be traced. If omitted the whole system will be traced
+3. **IP address:** Trace is only honoured for requests from that IP. If omitted, any IP will cause the trace to output. This is very useful in a live system because it means that you can trace a particular problem without interfering with normal use.
+4. **Log File**  -  Output to this file. If omitted, output goes to the console  
 
 ###  Line 2
 
 On the lext line you can add a list of levels in priority order. If omitted the default values above are used.
    
 ###   Examples
-               norm,myprog.js,192.168.0.12,trace.log  
-               min,norm,max
+                  norm
+
+  *This example is normal trace level on the whole system from anywhere with output to the console. That is probably the most common setting.*
+              
+                 norm,myprog.js,192.168.0.12,trace.log  
+                 min,norm,max
                
-               This example:
-                 - traces myprog.js
-                 - norm level,
-                 - only requests from one IP adress
-                 - traces to a log file,
-                 - changes standard levels list.
+  *This example:
+  - traces myprog.js
+  - norm level,
+  - only requests from one IP adress
+  - traces to a log file,
+  - changes standard levels list.*
 
                mylevel
                mylevel
-               (this example only traces the bespoke level, from anywhere, logs to the console)
+  
+  *This example only traces the bespoke level, from anywhere, logs to the console.*
 
                verbose
-               (this traces every level except 'silly'.)
+               
+*this traces every level except 'silly'.*
 
                ,,,   
-               (no trace (or delete/rename the file))
+               
+*No trace (or delete/rename the file)*
 
 ##  Functions 
   
