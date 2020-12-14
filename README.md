@@ -6,7 +6,7 @@ Trace progress through a Node program.  Trace statements    can be added at any 
 
 1. Different levels of tracing means that you can list only important steps or every trace call.  There is a default list of levels but you can define your own.
 
-2.Traces can be turned on or off in real time under control of a small text file. You don't need to restart.  So keep       trace statements in the code to help diagnose problems       in production. Because.....
+2. Traces can be turned on or off in real time under control of a small text file. You don't need to restart.  So keep  trace statements in the code to help diagnose problems in production. Because.....
 
 3. Traces can be limited to requests from a given      IP address - so can be used in a live system without        interfering with other users transactions.
 
@@ -16,15 +16,13 @@ Trace progress through a Node program.  Trace statements    can be added at any 
  
 ##   Control file
 
-  This is a csv file. Data items are as follows. All are optional 
-   but omit the level or put in a level that is not in the priority list
-   and there will be no trace.
+  This is a csv file. Data items are listed below. All are optional,  but if you omit the level or put in a level that is not in the priority list there will be no trace.
 
-   The only essential item is the level. Most of the time the text file will just contain one word, e.g. 
+  The only essential item is the level. Most of the time the text file will just contain one word, e.g. 
 
-   norm
+           norm
 
-   Fo normal level of tracing. To switch traces off  just delete or rename the file. But for finer control you have a number of options, from outputting every trace call in your system down to just one single call.
+   For normal level of tracing. To switch traces off  just delete or rename the file. But for finer control you have a number of options, from outputting every trace call in your system down to just one single call.
   
 ###   Line 1
 ```
@@ -48,12 +46,12 @@ On the lext line you can add a list of levels in priority order. If omitted the 
                  norm,myprog.js,192.168.0.12,trace.log  
                  min,norm,max
                
-  *This example:
-  - traces myprog.js
-  - norm level,
-  - only requests from one IP adress
-  - traces to a log file,
-  - changes standard levels list.*
+  *This example:*
+  - *traces myprog.js*
+  - *norm level,*
+  - *only requests from one IP adress*
+  - *traces to a log file,*
+  - *changes standard levels list.*
 
                mylevel
                mylevel
@@ -70,19 +68,19 @@ On the lext line you can add a list of levels in priority order. If omitted the 
 
 ##  Functions 
   
- trace.init() - called once per request only.  Reads the  
-                  text file and sets up local variables.
- trace.log() -  Normal trace call
+ **trace.init()** - called once per request only.  Reads the  text file and sets up local variables.
+
+ **trace.log()** -  Normal trace call
 
 
 ###   trace.init(req,dir)
    
- To be called once per transaction only
- parameters:
-* request object 
-* directory of trace control file
+ To be called once per transaction only.  parameters:
+1. request object 
+2. directory of trace control file
 
- example:
+example:
+
             let trace=require('trace');
             trace.init(req,'./');
 
@@ -90,11 +88,11 @@ On the lext line you can add a list of levels in priority order. If omitted the 
 ###  trace.log(item1,item2,... {options})
    
 
-    trace.log (item1,item2,... {options})
-    Options are 
-    1.   level: (if omitted 'norm' is assumed)     
-    2.   break: 'x'  draws a line of 40 x the entered character to help locate in the output.
-    3.  anything else is treated as a data item. So {foo:'bar'}  is the same as '\nfoo','bar'
+trace.log (item1,item2,... {options})
+Options are 
+1.   level: (if omitted 'norm' is assumed)     
+2.   break: 'x'  draws a line of 40 x the entered character to help locate in the output.
+3.  anything else is treated as a data item. So {foo:'bar'}  is the same as '\nfoo','bar'
 
 ###      examples:  
   ```
@@ -105,20 +103,20 @@ On the lext line you can add a list of levels in priority order. If omitted the 
 
 ##   Output
    
-   entry point   ->  n.nnn seconds 
-   followed by data.
+   entry point   ->  n.nnn seconds followed by data.
   
   The entry point is the name and line number of the call
   in the calling program.  The time is the time since 
   trace.init() was called. 
 
-  The data is as listed in the function call. If an item 
-  is an object it is preceded by 
-  Object>>> 
-  each item in the object listed on a separate line.
+  The data is as listed in the function call. 
+  
+  If an item  is an object it is preceded by 
+  Object>>>    each item in the object listed on a separate line.
+
   name:value
-  if that object conains another it is preceded by 
-   Innerobject>>>
+  
+  if that object conains another it is preceded by  Innerobject>>>
 
 ## Example of use 
 
@@ -140,4 +138,7 @@ On the lext line you can add a list of levels in priority order. If omitted the 
   hello world
 ```
 
-
+```
+  trace.log(foo,bar {level:'verbose'});
+```
+Is the same but the output is only listed if the control file contains 'verbose' or 'silly'.
