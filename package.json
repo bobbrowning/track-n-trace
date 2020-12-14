@@ -1,0 +1,26 @@
+{
+  "name": "trace",
+  "version": "1.0.0",
+  "description": "Trace program instructions",
+  "main": "trace.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Bob Browning",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bobbrowning/trace.git"
+  },
+  "keywords": [
+    "trace",
+    "debug"
+  ],
+  "bugs": {
+    "url": "https://github.com/bobbrowning/trace/issues"
+  },
+  "homepage": "https://github.com/bobbrowning/trace#readme",
+  "dependencies": {
+    "request-ip": "^2.1.3"
+  }
+}
