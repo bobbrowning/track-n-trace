@@ -81,7 +81,7 @@ On the lext line you can add a list of levels in priority order. If omitted the 
 
 example:
 
-            let trace=require('trace');
+            let trace=require('track-n-trace');
             trace.init(req,'./');
 
 
