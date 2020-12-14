@@ -125,7 +125,7 @@ Options are
 
   example.js
   ```
-  let trace = require('trace');
+  let trace = require('track-n-trace');
   await trace.init(req,'./');    // req is the request object    ./ is the location of the control file
   let foo='hello';
   let bar='world';
