@@ -3,8 +3,9 @@
 # Trace
 
 Trace progress through a Node program.  Trace statements    can be added at any point in the code to log important      data.  A bit like console.log but with very useful enhancements:
-1. Different levels of tracing means that you can list only important steps or every trace call.  There is a default list of levels but you can define your own. 
-2.Traces can be turned on or off in real time under control of a small text file. You don't need to restart.  So keep       trace statements in the code to help diagnose problems       in production. Because.....  
+
+1. Different levels of tracing means that you can list only important steps or every trace call.  There is a default list of levels but you can define your own.
+2.Traces can be turned on or off in real time under control of a small text file. You don't need to restart.  So keep       trace statements in the code to help diagnose problems       in production. Because.....
 3. Traces can be limited to requests from a given      IP address - so can be used in a live system without        interfering with other users transactions.
 4. Traces can be limited to a one javascript code file      or the whole system.
 5. Traces can be sent to the console or a text file.
