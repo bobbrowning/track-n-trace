@@ -24,7 +24,7 @@ This will list traces with this level or preceding this in the priority list. Th
 The commands are:
 
 1. **level=** Trace.log traces if the level in the call is equal or preceding this. 
-2. ***source=** Name of the javascript file to be traced. If omitted the whole system will be traced
+2. **source=** Name of the javascript file to be traced. If omitted the whole system will be traced
 3. **ip=** Trace is only honoured for requests from that IP. If omitted, any IP will cause the trace to output. This is very useful in a live system because it means that you can trace a particular problem without interfering with normal use.
 4. **log=**  Output to this file. If omitted, output goes to the console  
 5. **note=** Anything on this line is listed on the output.
@@ -35,7 +35,7 @@ The commands are:
 
 The minimum control file is 
 ```
-level=xxx
+level=norm
 ```
 This example shows every option
 ```
@@ -43,9 +43,10 @@ level=verbose
 ip=192.168.0.12            # If omitted from any IP
 source=admin.js            # If omitted from all source files
 priority=verbose,silly     # if omitted assumed min,norm,verbose,silly
+log=trace.log              # if omitted listing to the console
 note=Test 36               # Optional note at beginning of trace listing
 ```
-This example only traces the bespoke level, from anywhere, logs to the console.
+This example only traces the bespoke level, which might be as little as one call. 
 ```
  level=mylevel
  priority=mylevel
