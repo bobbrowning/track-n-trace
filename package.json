@@ -1,7 +1,7 @@
 {
-  "name": "trace",
+  "name": "track-n-trace",
   "version": "1.0.0",
-  "description": "Trace program instructions",
+  "description": "Trace program instructions, console.log on steroids",
   "main": "trace.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -16,55 +16,43 @@ Trace progress through a Node program.  Trace statements    can be added at any 
  
 ##   Control file
 
-  This is a csv file. Data items are listed below. All are optional,  but if you omit the level or put in a level that is not in the priority list there will be no trace.
+The control, file takes the form of lines containing command=data.  The '#' character is used for comments.  To turn off tracing use level=none (or delete/rename the file).
 
-  The only essential item is the level. Most of the time the text file will just contain one word, e.g. 
 
-           norm
-
-   For normal level of tracing. To switch traces off  just delete or rename the file. But for finer control you have a number of options, from outputting every trace call in your system down to just one single call.
+This will list traces with this level or preceding this in the priority list. The default list is [min,norm,verbose,silly]. 
   
-###   Line 1
-```
-level,filename,ip,logfile
-```
+The commands are:
 
-1. **Level:** Trace.log traces if the level in the call is at or below the priority of the level in the control file. Default levels in priority order are: *min,norm,verbose,silly* but these can be changed in line 2(below).
-2. **file name:** Name of the javascript file to be traced. If omitted the whole system will be traced
-3. **IP address:** Trace is only honoured for requests from that IP. If omitted, any IP will cause the trace to output. This is very useful in a live system because it means that you can trace a particular problem without interfering with normal use.
-4. **Log File**  -  Output to this file. If omitted, output goes to the console  
+1. **level=** Trace.log traces if the level in the call is equal or preceding this. 
+2. ***source=** Name of the javascript file to be traced. If omitted the whole system will be traced
+3. **ip=** Trace is only honoured for requests from that IP. If omitted, any IP will cause the trace to output. This is very useful in a live system because it means that you can trace a particular problem without interfering with normal use.
+4. **log=**  Output to this file. If omitted, output goes to the console  
+5. **note=** Anything on this line is listed on the output.
+6. **priority=** Comma separated list of levels to be used instead of the default list
 
-###  Line 2
-
-On the lext line you can add a list of levels in priority order. If omitted the default values above are used.
    
 ###   Examples
-                  norm
 
-  *This example is normal trace level on the whole system from anywhere with output to the console. That is probably the most common setting.*
-              
-                 norm,myprog.js,192.168.0.12,trace.log  
-                 min,norm,max
-               
-  *This example:*
-  - *traces myprog.js*
-  - *norm level,*
-  - *only requests from one IP adress*
-  - *traces to a log file,*
-  - *changes standard levels list.*
+The minimum control file is 
+```
+level=xxx
+```
+This example shows every option
+```
+level=verbose
+ip=192.168.0.12            # If omitted from any IP
+source=admin.js            # If omitted from all source files
+priority=verbose,silly     # if omitted assumed min,norm,verbose,silly
+note=Test 36               # Optional note at beginning of trace listing
+```
+This example only traces the bespoke level, from anywhere, logs to the console.
+```
+ level=mylevel
+ priority=mylevel
+```
 
-               mylevel
-               mylevel
   
-  *This example only traces the bespoke level, from anywhere, logs to the console.*
 
-               verbose
-               
-*this traces every level except 'silly'.*
-
-               ,,,   
-               
-*No trace (or delete/rename the file)*
 
 ##  Functions 
   
@@ -90,8 +78,8 @@ example:
 
 trace.log (item1,item2,... {options})
 Options are 
-1.   level: (if omitted 'norm' is assumed)     
-2.   break: 'x'  draws a line of 40 x the entered character to help locate in the output.
+1.   **level:'xxx',** (if omitted 'norm' is assumed)     
+2.   **break:'x',**  draws a line of 40 x the entered character to help locate in the output.
 3.  anything else is treated as a data item. So {foo:'bar'}  is the same as '\nfoo',':','bar'
 
 ###      examples:  
@@ -120,10 +108,7 @@ Options are
 
 ## Example of use 
 
- control file =  norm,,192.168.0.12 
-
-
-  example.js
+   example.js
   ```
   let trace = require('track-n-trace');
   await trace.init(req,'./');    // req is the request object    ./ is the location of the control file
