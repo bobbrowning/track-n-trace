@@ -144,7 +144,7 @@ exports.init = function (req, controldir) {
   let data;
   let messages = '';
   try {
-    data = fs.readFileSync(controldir + 'trace.txt', 'utf8');
+    data = fs.readFileSync(controldir + 'trace.config', 'utf8');
   } catch (err) {
     tracelevel = '';
     return (`initialised no log file - no trace`);
@@ -240,7 +240,7 @@ exports.init = function (req, controldir) {
   if (tracelevel) {
     messages += `***** Tracing transactions from client: ${userip} ${only} *****`;
     messages += `\nDate: ${displaydate}`;
-    messages += `\nControl file: ${controldir}trace.txt`;
+    messages += `\nControl file: ${controldir}trace.config`;
     messages += `\nLevel:  ${tracelevel}`;
     if (traceprog) { messages += `\nSource file: ${traceprog}`; }
     if (priority) { messages += `\nBespoke priority levels: [${priority}]` }

@@ -6,7 +6,7 @@ Trace progress through a Node program.  Trace statements    can be added at any 
 
 1. Different levels of tracing means that you can list only important steps or every trace call.  There is are default levels but you can define your own.
 
-2. Traces can be turned on or off in real time under control of a small text file. You don't need to restart.  So keep  trace statements in the code to help diagnose problems in production. Because.....
+2. Traces can be turned on or off in real time under control of a small text file (trace.config). You don't need to restart.  So keep  trace statements in the code to help diagnose problems in production. Because.....
 
 3. Traces can be limited to requests from a given      IP address - so can be used in a live system without        interfering with other users transactions.
 
@@ -15,6 +15,8 @@ Trace progress through a Node program.  Trace statements    can be added at any 
 5. Traces can be sent to the console or a text file.
  
 ##   Control file
+
+The control file is called trace.config. 
 
 The control, file takes the form of lines containing command=data.  The '#' character is used for comments.  To turn off tracing use level=none (or delete/rename the file).
 

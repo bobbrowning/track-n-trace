@@ -1,26 +1,54 @@
 {
-  "name": "track-n-trace",
-  "version": "1.0.0",
+  "_from": "track-n-trace",
+  "_id": "track-n-trace@1.0.0",
+  "_inBundle": false,
+  "_integrity": "sha512-c6A1nGSJPnJ9Y5BwxXzZKJKymY/pc7S9Vzgl47tYiQkfHw6N5MCPT4KO/7NUG18lDOhVnExp4hg9RS/9UK9DGg==",
+  "_location": "/track-n-trace",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "track-n-trace",
+    "name": "track-n-trace",
+    "escapedName": "track-n-trace",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/track-n-trace/-/track-n-trace-1.0.0.tgz",
+  "_shasum": "147ca30a19061482f69873e0dc8b6ae6c17ed20e",
+  "_spec": "track-n-trace",
+  "_where": "/home/bob742/node-test/sails/file-maint",
+  "author": {
+    "name": "Bob Browning"
+  },
+  "bugs": {
+    "url": "https://github.com/bobbrowning/track-n-trace/issues"
+  },
+  "bundleDependencies": false,
+  "dependencies": {
+    "request-ip": "^2.1.3"
+  },
+  "deprecated": false,
   "description": "Trace program instructions, console.log on steroids",
-  "main": "trace.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "Bob Browning",
-  "license": "ISC",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/bobbrowning/trace.git"
-  },
+  "homepage": "https://github.com/bobbrowning/track-n-trace#readme",
   "keywords": [
     "trace",
     "debug"
   ],
-  "bugs": {
-    "url": "https://github.com/bobbrowning/trace/issues"
+  "license": "ISC",
+  "main": "trace.js",
+  "name": "track-n-trace",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bobbrowning/track-n-trace.git"
   },
-  "homepage": "https://github.com/bobbrowning/trace#readme",
-  "dependencies": {
-    "request-ip": "^2.1.3"
-  }
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "version": "1.1.0"
 }
