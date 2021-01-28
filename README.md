@@ -56,8 +56,8 @@ This example shows every option
 ```
 level=norm          # comment out to switch traces off.
 ip=192.168.0.12     # If omitted, transactions from any IP will be traced
-source=admin.js     # Only trace if ip address of the client this this
                     #    Requires aditional code. 
+source=admin.js     # Only trace if ip address of the client this this
 priority=bob,extra  # Priority list, comma separated. If omitted assumed 
                     #   [min,norm,verbose,silly]
 note=Test 36        # Optional note at beginning of trace listing
