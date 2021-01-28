@@ -24,19 +24,30 @@
 *
 *
 *   trace=require(track-n-trace);
-*   await trace.init(req,'./');
+*   await trace.init(req,'./');   // Optional if you need the IP filtering feature
 *   foo='hello';
 *   bar='world';
 *   trace.log(foo,bar,{level='norm'});
 *
 **************************************************** */
 
-let traceprog = '';
-let tracelevel = '';
-let tracetime = 0;
-let outstream = undefined;
-let stdlevels = ['min', 'norm', 'verbose', 'silly'];
-let levels = stdlevels;
+exports.log = log;
+exports.init = init;
+
+
+// Local data
+let oldlogfile = '';         // The current log file  (old when in init())
+let traceprog = '';          // only trace this code file
+let tracelevel = '';         // trace level
+let tracetime = 0;           // time of the last init
+let outstream = undefined;   // Log file
+let stdlevels = ['min', 'norm', 'verbose', 'silly'];  // standard leels
+let levels = stdlevels;      //  levels used (can be changed by the conf file)
+let maxDepth = 3;            // depth of nesed objects listed
+let lineWidth = 60;
+let indent = 0;              // used internally 
+let nextInit = 0;            // next init time in milliseconds
+let initInterval = 5;        // 5 minutes between runs
 
 /* ***************************************************
 *
@@ -48,9 +59,27 @@ let levels = stdlevels;
 *
 *************************************************** */
 
-exports.log = async function () {
+
+
+async function log() {
+
+  //  Call the init routine according to refresh interval
+  if (Date.now() > nextInit) {
+    init(false, './');
+  }
+
+  //  if no trace level then that is it...
   if (!tracelevel) { return; }
-  // default level of request to 'norm',  if not stated
+
+
+  /* ***********************************************  
+ *
+ * work out the code file and line number of the trace call
+ * by pretending there is an error and scanning error text 
+ * if the config is set to only trace one program, return 
+ * if this is not the program.
+ *
+ *********************************************** */
   error = new Error();
   let stack = error.stack.split(' at ');
   let caller = '';
@@ -67,116 +96,268 @@ exports.log = async function () {
   program = temp[0];
   if (traceprog && program != traceprog) { return; }
 
-  let level = 'norm';
-  let text = '';
-  let lapse = (Date.now() - tracetime) / 1000;
+  indent = 0;
+
+  /* ***********************************************  
+  *
+  *  Assemble listing and ouput at the end. 
+  *  Not argument by argument. 
+  *  This is because the options may come at the end...
+  * 
+  *  Set up data.  Default level is 'norm'
+  *  other options are picked up any object included in 
+  *  the parameter list.    
+  *
+  *  Then loop through arguments.
+  *
+  *********************************************** */
+
+  let level = 'norm';   // default level if not in the options
+
   let output = '';
-  lapse = lapse.toFixed(3);
+  let item;
+
+  // loop now
   for (let i = 0; i < arguments.length; i++) {
-    if (typeof arguments[i] == 'object') {
+
+    // if this is an object look for options.. Store them and delete from 
+    // object.
+    if (typeof arguments[i] == 'object' && arguments[i] != null) {
       item = arguments[i];
-      if (item) {
+      if (item) {            // Anything in it?
         if (item.level) {
           level = item.level;
           delete item.level;
         }
-        if (item.text) {
-          text = item.text;
-          delete item.text;
-        }
         if (item.break) {
           output += '\n';
-          for (i = 0; i < 40; i++) {
-            output += item.break;
-          }
+          output += item.break.repeat(lineWidth);
           delete item.break;
         }
       }
-      if (item) {
-        if (Object.keys(item).length !== 0) { output += `\nObject>>> ${arguments[i]}` }
-        for (const key of Object.keys(item)) {
-          if (typeof item[key] == 'object') {
-            output += `\nInnerobject>>> ${key}`;
-            for (const innerkey of Object.keys(item[key])) {
-              output += `\n    ${innerkey}: ${item[key][innerkey]}`;
-            }
-          }
-          else {
-            output += `\n  ${text} ${key}: ${item[key]}`;
-          }
-        }
-      }
-    }
+
+      // if the object only had options in it go on to next argument
+      if (Object.keys(item).length == 0) { continue }
+
+      let result = listObject(item);
+      output += `\n${result}`;
+    }   // End object processing..
     else {
-      output += `\n${arguments[i]}`;
+      let val = fixForOutput(arguments[i]);
+      output += `\n${val}`;
     }
   }
-  output = `\n **** ${caller} -> ${lapse} seconds - level ${level}  ****` + output;
+
+  //  Trace heading  - lapse is seconds since init.
+  let lapse = (Date.now() - tracetime) / 1000;
+  lapse = lapse.toFixed(3);
+
+  let final = `
+${'-'.repeat(lineWidth)}
+${caller} -> ${lapse} seconds - level ${level}  ${output}`;
+
+  // Now see if we should output it... 
+  // not ideal, but the options might come at the end. 
   for (let i = 0; i < levels.length; i++) {
     if (level == levels[i]) {                //  We are at the level requested
       if (outstream) {
-        outstream.write(output + '\n');
+        outstream.write(final + '\n');
       } else {
-        console.log(output);
+        console.log(final);
       }
       break;
     }
     if (tracelevel == levels[i]) { break; } // Stop checking  we are at trace level
   }
-
+  // Tidy up
+  indent = 0;
   return ('OK');
+}
+
+/* ***********************************************  
+ *
+ * Format data items depending on type 
+ *
+ *********************************************** */
+
+function fixForOutput(val) {
+  //  console.log(171,val, typeof val);
+  if (val == null) {
+    return ('null');
+  }
+  if (typeof val == 'string') {
+    return (`'${val}'`);
+  }
+  if (typeof val == 'function') {
+    return ('Function');
+  }
+  if (typeof val == 'boolean') {
+    if (val) { val = 'true' } else { val = 'false' }
+    return (val);
+  }
+  if (typeof val == 'object') {
+    if (val.constructor.name === "RegExp") {
+      return (`${val} (Regexp)`);
+    }
+    // This sequence can be called recursively with 
+    // nested objects. Indented for each
+    indent++;
+    if (indent >= maxDepth) {
+      val = `[Deeper Object below level ${indent}`;
+    }
+    else {
+      val = listObject(val);
+    }
+    indent--;
+    return (val);
+  }
+  return (val);
+}
+/* ***********************************************  
+ *
+ * List an object.  
+ *
+ *********************************************** */
+function listObject(obj) {
+  let result = ''
+
+  // The separator between items is '|||'. At he end of the 
+  // object we work out how wide the line is. Depending on 
+  // line length the bars are repaced by one space or 
+  // a newline.  This keeps short objects on one line.
+  // bars keps count so we can take account in working out length.
+  let bars = 0;
+
+  // Spacing before each tine.  Two spaces per indent. 
+  let spacing = ' '.repeat(indent * 2);
+
+  // Start object..
+  if (Array.isArray(obj)) {
+    result += '[';
+  }
+  else {
+    result += '{';
+  }
+
+  // loop through object
+  for (let key of Object.keys(obj)) {
+
+    // may be an object. In which case this will be called recursively.
+    let val = fixForOutput(obj[key]);
+
+    // format will depend on whether an array or not
+    if (Array.isArray(obj)) {
+      result += `|||${val}, `;
+    }
+    else {
+      result += `|||${key}: ${val}, `;
+    }
+  }
+
+  // Finish object listing
+  if (Array.isArray(obj)) {
+    result += '|||]';
+  }
+  else {
+    result += `|||}`;
+  }
+
+  //  Will we be on a single line or multo-line
+  if (result.length - (bars * 3) > lineWidth) {
+    result = result.split('|||').join('\n' + spacing);
+  }
+  else {
+    result = result.split('|||').join(' ');
+  }
+
+  return (result);
 }
 
 /* *****************************************
 * 
 *                trace.init
 *                ----------
-* to be called once per transaction only
+*  Will be called regularly to refresh the config.
+*
+*  If the IP filtering feature is used or the
+*  config file is not in the project directory. 
+*  The function must be called by 
+*  the app once at the start of each transaction.
+*  Two reasons:
+*  - req object is needed so require app to pass it on
+*  - needs to be checked once per transaction only
+*    if relying on refresh period it might cover 
+*    several transactions.  
+*
 * parameters:
-*   - request object 
+*   - request object    // only if called by the app, otherwise false
 *   - directory of trace control file
 * e.g. trace.init(req,'./');
 *
  **************************************** */
-exports.init = function (req, controldir) {
+function init(req, controldir) {
+
   const fs = require('fs');
   const requestIp = require('request-ip');
+
+  // re-initialise the data
+  traceprog = '';
+  tracelevel = '';
+  levels = stdlevels;
+  maxDepth = 3;
+  lineWidth = 60;
+  indent = 0;
+  initInterval = 5;  // 5 minutes between runs
+
+  let testip = null;   // IP tested against
+  let logfile = null;  // name of log file
+  let priority = null;
+  let note = null;
+
+
+
+
+  //  read the config file
   let data;
-  let messages = '';
   try {
     data = fs.readFileSync(controldir + 'trace.config', 'utf8');
   } catch (err) {
     tracelevel = '';
+    console.log('no Track-n-trace control file');
     return (`initialised no log file - no trace`);
   }
-  let ctrl = data.split('\n');
-  let testip = null;
-  let logfile = null;
-  let priority = null;
-  let note = null;
-  levels = stdlevels;
 
+
+  // parse the log file data
+  let ctrl = data.split('\n');      // array of lines
   for (let i = 0; i < ctrl.length; i++) {
     if (ctrl[i].includes('#')) {               //    ignore comments
       let temp = ctrl[i].split('#');
-      line = temp[0];
+      line = temp[0];                           // line without comments
     }
     else {
       line = ctrl[i];
     }
-    if (!line.includes('=')) { continue; }     // skip if no command
-    let cmd = line.split('=');
+    if (!line.includes('=')) { continue; }     // skip if not command
+    let cmd = line.split('=');   // command and value
     {
-      let cmdname = cmd[0].toLowerCase();
+      let cmdname = cmd[0].replace(/\s/g, '').toLowerCase();    // dump any white space
+
+      // assign commands to variables 
       if (cmdname == 'note') {
         note = cmd[1];
       }
-      let cmddata = cmd[1].replace(/\s/g, '')               // dump any white 
-      cmddata = cmddata.toLowerCase();
+      let cmddata = cmd[1].replace(/\s/g, '').toLowerCase();  // dump any white space
       if (cmdname == 'level') { tracelevel = cmddata; }
       if (cmdname == 'source') { traceprog = cmddata; }
       if (cmdname == 'ip') { testip = cmddata; }
+      if (cmdname == 'maxdepth' && cmddata) {
+        let data = parseInt(cmddata);
+        if (data > 0) { maxDepth = data; }
+      }
       if (cmdname == 'log') { logfile = cmddata; }
+      if (cmdname == 'refresh') { initInterval = cmddata; }
+      if (cmdname == 'linewidth') { lineWidth = cmddata; }
       if (cmdname == 'priority') {
         levels = cmddata.split(',');
         priority = cmddata;
@@ -184,68 +365,92 @@ exports.init = function (req, controldir) {
     }
 
   }
-   /*
-   if (ctrl[0]) {ctrl[0] = ctrl[0].replace(/\s/g, ''); } // get rid of any whitespace
-   if (ctrl[1]) {ctrl[1] = ctrl[1].replace(/\s/g, '');}  // get rid of any whitespace
- 
-   let logfile = '';
-   let userip = requestIp.getClientIp(req);
-   tracetime = Date.now();
- 
-   // *********** get the ctrl file line 1 (tracelevel, ip addrss, log file)
-   let txt = ctrl[0].split(',');
-   tracelevel = txt[0];
-   traceprog = txt[1];
-   let testip = txt[2];
-   logfile = txt[3];
-   */
-  let userip = requestIp.getClientIp(req);
-  tracetime = Date.now();
-  if (tracelevel=='none') {
-    tracelevel='';
-  }
-  if ((testip) && (userip != testip)) {
+
+  //  Conditions for no trace...
+
+  // allow 'none' to stop tracing
+  if (tracelevel == 'none') {
     tracelevel = '';
   }
+
+  // If caled on refresh scedule req will contain false. 
+  // so must be called by the app.  
+  // If no match then stop tracing
+  let userip = '';
+  if (req) { userip = requestIp.getClientIp(req); }
+  if (userip) {
+    if ((testip) && (userip != testip)) {
+      tracelevel = '';
+    }
+  }
+
+  //  if the level is not in the set of levels stop tracing
   if (!levels.includes(tracelevel)) {
     tracelevel = '';
-  }  // 
+  }
+
+
+  //  Current time and time of next init run
+  tracetime = Date.now();
+  let date = new Date();
+  let displaydate = date.toISOString();
+  nextInit = tracetime + (60000 * initInterval);
+  let next = new Date(nextInit);
+  let nextdate = next.toISOString();
+
+  // Output message to console  if not trace
   if (!tracelevel) {
+    console.log(`
+    No traces
+    Date: ${displaydate}
+    Next trace config refresh: ${nextdate}  (${initInterval} minutes)
+    `);
+
     return (`initialised - no trace`);
   }
-  if (logfile) {
-    outstream = fs.createWriteStream(logfile, { flags: 'a' });
-  }
-  else {
+
+  //  we are tracing
+
+  //  Log file
+  if (oldlogfile && !logfile)  //  end  of logfile so close
+  {
+    outstream.end('end');
     outstream = undefined;
   }
+  if (logfile && logfile != oldlogfile) {   // new or changed logfile
+    if (oldlogfile) { outstream.end('end'); }                  // close old file
+    outstream = fs.createWriteStream(logfile, { flags: 'a' });
+  }
+  oldlogfile = logfile;
 
-  /*
-    // ************** get the ctrl file line 2 (replacement levels list)
-    if (ctrl[1]) {
-      levels = ctrl[1].split(',');
-    }
-    else {
-      levels = stdlevels;
-    }
-    */
+
 
   //  leave a message on the console
-  let date = new Date();
-  displaydate = date.toISOString();
+
   let only = '';
-  if (testip) { only = 'only'; }
+  if (userip) { only = 'only'; }
   let program = '';
   if (traceprog) { program = `\nProgram file: ${traceprog}`; }
   if (tracelevel) {
-    messages += `***** Tracing transactions from client: ${userip} ${only} *****`;
-    messages += `\nDate: ${displaydate}`;
-    messages += `\nControl file: ${controldir}trace.config`;
-    messages += `\nLevel:  ${tracelevel}`;
+    messages = `
+***** Tracing transactions from client: ${userip} ${only} *****
+Date: ${displaydate}
+Next config refresh: ${nextdate}  (${initInterval} minutes)
+Control file: ${controldir}trace.config
+Maximum depth of nested objects: ${maxDepth}
+Level:  ${tracelevel}`;
     if (traceprog) { messages += `\nSource file: ${traceprog}`; }
     if (priority) { messages += `\nBespoke priority levels: [${priority}]` }
     if (logfile) {
       messages += `\nLog file: ${logfile}`;
+    }
+    if (!req && testip) {
+      messages += `
+
+Filter by users IP ${testip} is not available.
+To filter by IP you will need to call trace.init(req,'./') somewhere 
+in the app at the start of the transaction.
+`;
     }
     if (note) { messages += `\nNote: \n${note}`; }     // if no logfile - already sent to console
 
@@ -262,3 +467,8 @@ exports.init = function (req, controldir) {
   // that's it     
   return (`OK`);
 }
+
+
+
+
+
