@@ -14,7 +14,7 @@ Trace progress through a Node program.  Trace statements    can be added at any 
 
 5. Traces can be sent to the console or a text file.
 
-6. You can control the depth to which objects are listed (object containing objects).
+6. You can control the depth to which nested objects are listed (object containing objects).
 
 
 ## Installation
