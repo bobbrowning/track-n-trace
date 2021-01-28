@@ -83,7 +83,7 @@ This example only traces the bespoke level, which might be as little as one call
   
  **trace.log()** -  Normal trace call
 
- **trace.init()** - Required if the IP filtering feature is used. Called once per request only.  Reads and processes the the  config file so that changes are recognised.  Also needed if the config file is in a non-standard location.
+ **trace.init()** - Required if the IP filtering feature is used. **Called once per request only.**  Reads and processes the the  config file so that changes are recognised.  Also needed if the config file is in a non-standard location.
 
 ###  trace.log(item1,item2,... {items,...,  options})
    
