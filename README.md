@@ -17,10 +17,10 @@ Trace progress through a Node program.  Trace statements    can be added at any 
 6. You can control the depth to which objects are listed (object containing objects).
 
 ## Installation
-
+```
 npm install request-ip
 npm install track-n-trace
-
+```
 The config file shoul be placed in the root directory of the node project. A sample is in the track-n-trace directory.
 
 ##   Control file
