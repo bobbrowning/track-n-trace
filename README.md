@@ -128,6 +128,9 @@ In code file admin.js
 let trace = require('track-n-trace');
 trace.init(req, './');  // optional unless IP filtering is used
     ...
+id=10;
+tablename='customers';
+title='Customer file';
 trace.log(id,{tablename:tablename,title:title, level: 'min'});
 ```
 output:
