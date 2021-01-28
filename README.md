@@ -107,12 +107,14 @@ example:
 
 
 ###      examples:  
-  ```
-        trace.log(tablename,id,title);                                  // assumes level='norm'
-        trace.log ({'Name of table': tablename, id:id, title:title });  // nicer output
-        trace.log(tablename,id,{title:title, level:'verbose'});                // level 'verbose'
-        trace.log('start of transaction',{level:'min',break:'#'});      // draws line of hashes
-  ```
+```
+let trace=require('track-n-trace');
+... 
+trace.log(tablename,id,title);                                  // assumes level='norm'
+trace.log ({'Name of table': tablename, id:id, title:title });  // nicer output
+trace.log(tablename,id,{title:title, level:'verbose'});         // level 'verbose'
+trace.log('start of transaction',{level:'min',break:'#'});      // draws line of hashes
+```
 
 ##   Output
 
@@ -128,11 +130,13 @@ trace.init(req, './');  // optional unless IP filtering is used
     ...
 trace.log(id,{tablename:tablename,title:title, level: 'min'});
 ```
-   
+output:
+```   
 ------------------------------------------------------------
 admin.js:60:11 -> 0.006 seconds - level norm  
 10
 { tablename: 'customers', title: 'Customer file', }
+```
 
 The entry point is the name and line number (60) of the call.
 The time is the time since the config was refreshed. 
