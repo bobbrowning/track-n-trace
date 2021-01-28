@@ -400,12 +400,12 @@ function init(req, controldir) {
 
   // Output message to console  if not trace
   if (!tracelevel) {
-    console.log(`
+ /*   console.log(`
     No traces
     Date: ${displaydate}
     Next trace config refresh: ${nextdate}  (${initInterval} minutes)
     `);
-
+*/
     return (`initialised - no trace`);
   }
 

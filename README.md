@@ -8,13 +8,14 @@ Trace progress through a Node program.  Trace statements    can be added at any 
 
 2. Traces can be turned on or off in real time under control of a small text file (trace.config). You don't need to restart.  So keep  trace statements in the code to help diagnose problems in production. Because.....
 
-3. Traces can be limited to requests from a given      IP address - so can be used in a live system without        interfering with other users transactions.
+3. Traces can be limited to a one javascript code file      or the whole system.
 
-4. Traces can be limited to a one javascript code file      or the whole system.
+4. Traces can be sent to the console or a text file.
 
-5. Traces can be sent to the console or a text file.
+5. You can control the depth to which objects are listed (object containing objects).
 
-6. You can control the depth to which objects are listed (object containing objects).
+6. Traces can be limited to requests from a given IP address.  This is very valuable because if you hit problems in a live site, you can switch tracing on and often identify problems without having to restart the app. 
+
 
 ## Installation
 ```
@@ -57,7 +58,7 @@ This example shows every option
 level=norm          # comment out to switch traces off.
 ip=192.168.0.12     # If omitted, transactions from any IP will be traced
                     #    Requires aditional code. 
-source=admin.js     # Only trace if ip address of the client this this
+source=admin.js     # Only trace if the ip address of the client is this
 priority=bob,extra  # Priority list, comma separated. If omitted assumed 
                     #   [min,norm,verbose,silly]
 note=Test 36        # Optional note at beginning of trace listing
@@ -83,11 +84,9 @@ This example only traces the bespoke level, which might be as little as one call
 
  **trace.init()** - Required if the IP filtering feature is used. Called once per request only.  Reads and processes the the  config file so that changes are recognised.  Also needed if the config file is in a non-standard location.
 
-###  trace.log(item1,item2,... {options})
+###  trace.log(item1,item2,... {items,...,  options})
    
-trace.log (item1,item2,... {items,... ,options})
-
-A parameter which is an object object may contain options.  
+A parameter which is an object may contain options.  
 1.   **level:'xxx',** (if omitted 'norm' is assumed)     
 2.   **break:'x',**  draws a line of [line length] x the entered character to help locate in the output.
 
@@ -120,16 +119,21 @@ Parameters are listed once per line.  Entry point, number of seconds since the l
  
 
 example:
-In code file admin.js line 60: 
+In code file admin.js
+
+```
+let trace = require('track-n-trace');
+trace.init(req, './');  // optional unless IP filtering is used
+    ...
 trace.log(id,{tablename:tablename,title:title, level: 'min'});
+```
    
 ------------------------------------------------------------
 admin.js:60:11 -> 0.006 seconds - level norm  
 10
 { tablename: 'customers', title: 'Customer file', }
 
-The entry point is the name and line number of the call
-in the calling program.  The time is the time since 
-the config was refreshed. 
+The entry point is the name and line number (60) of the call.
+The time is the time since the config was refreshed. 
 
 
