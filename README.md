@@ -28,7 +28,7 @@ The config file shoul be placed in the root directory of the node project. A sam
 
 The control file is called trace.config. The default location is the root directory of the node project.
 
-The control, file takes the form of lines containing command=data.  The '#' character is used for comments.  To turn off tracing use level=none (or delete/rename the file).
+The control, file takes the form of lines containing command=data.  The '#' character is used for comments.  To turn off tracing just comment out the 'level' command.
 
 
 This will list traces with this level or preceding this in the priority list. The default list is [min,norm,verbose,silly]. 
@@ -37,7 +37,7 @@ The commands are:
 
 1. **level=** Trace.log traces if the level in the call is equal or preceding this. 
 2. **source=** Name of the javascript file to be traced. If omitted the whole system will be traced
-3. **ip=** Trace is only honoured for requests from that IP. If omitted, any IP will cause the trace to output. This is very useful in a live system because it means that you can trace a particular problem without interfering with normal use.
+3. **ip=** Trace is only honoured for requests from that IP. If omitted, any IP will cause the trace to output. 
 4. **log=**  Output to this file. If omitted, output goes to the console  
 5. **note=** Anything on this line is listed on the output.
 6. **priority=** Comma separated list of levels to be used instead of the default list
