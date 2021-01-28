@@ -4,17 +4,17 @@
 
 Trace progress through a Node program.  Trace statements    can be added at any point in the code to log important data.  A bit like console.log but with very useful enhancements:
 
-1. Different levels of tracing means that you can control which statements get listed.  There is are default levels but you can define your own.
+1. Traces can be turned on or off in real time under control of the config file (trace.config). You don't need to restart.  So keep  trace statements in the code to help diagnose problems in production. Because.....
 
-2. Traces can be limited to a one javascript code file      or the whole system.
+2. Traces can be limited to requests from a given IP address.  This is very valuable because if you hit problems in a live site, you can switch tracing on and often identify problems without having to restart the app. 
 
-3. Traces can be sent to the console or a text file.
+3. Different levels of tracing means that you can control which statements get listed.  There is are default levels but you can define your own.
 
-4. You can control the depth to which objects are listed (object containing objects).
+4. Traces can be limited to a one javascript code file      or the whole system.
 
-5. Traces can be turned on or off in real time under control of a small text file (trace.config). You don't need to restart.  So keep  trace statements in the code to help diagnose problems in production. Because.....
+5. Traces can be sent to the console or a text file.
 
-6. Traces can be limited to requests from a given IP address.  This is very valuable because if you hit problems in a live site, you can switch tracing on and often identify problems without having to restart the app. 
+6. You can control the depth to which objects are listed (object containing objects).
 
 
 ## Installation
