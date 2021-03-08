@@ -83,7 +83,7 @@ This example only traces the bespoke level, which might be as little as one call
   
  **trace.log()** -  Normal trace call
 
- **trace.init()** - Required if the IP filtering feature is used. **Called once per request only.**  Reads and processes the the  config file so that changes are recognised.  Also needed if the config file is in a non-standard location.
+ **trace.init()** - Required if the IP filtering feature is used. Called once per request only.  Reads and processes the the  config file so that changes are recognised.  Also needed if the config file is in a non-standard location.
 
 ###  trace.log(item1,item2,... {items,...,  options})
    
@@ -107,14 +107,12 @@ example:
 
 
 ###      examples:  
-```
-let trace=require('track-n-trace');
-... 
-trace.log(tablename,id,title);                                  // assumes level='norm'
-trace.log ({'Name of table': tablename, id:id, title:title });  // nicer output
-trace.log(tablename,id,{title:title, level:'verbose'});         // level 'verbose'
-trace.log('start of transaction',{level:'min',break:'#'});      // draws line of hashes
-```
+  ```
+        trace.log(tablename,id,title);                                  // assumes level='norm'
+        trace.log ({'Name of table': tablename, id:id, title:title });  // nicer output
+        trace.log(tablename,id,{title:title, level:'verbose'});                // level 'verbose'
+        trace.log('start of transaction',{level:'min',break:'#'});      // draws line of hashes
+  ```
 
 ##   Output
 
@@ -128,18 +126,13 @@ In code file admin.js
 let trace = require('track-n-trace');
 trace.init(req, './');  // optional unless IP filtering is used
     ...
-id=10;
-tablename='customers';
-title='Customer file';
 trace.log(id,{tablename:tablename,title:title, level: 'min'});
 ```
-output:
-```   
+   
 ------------------------------------------------------------
 admin.js:60:11 -> 0.006 seconds - level norm  
 10
 { tablename: 'customers', title: 'Customer file', }
-```
 
 The entry point is the name and line number (60) of the call.
 The time is the time since the config was refreshed. 

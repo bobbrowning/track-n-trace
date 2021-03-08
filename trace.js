@@ -185,6 +185,9 @@ function fixForOutput(val) {
   if (val == null) {
     return ('null');
   }
+  if (val == NaN) {
+    return ('NaN');
+  }
   if (typeof val == 'string') {
     return (`'${val}'`);
   }
@@ -196,14 +199,14 @@ function fixForOutput(val) {
     return (val);
   }
   if (typeof val == 'object') {
-    if (val.constructor.name === "RegExp") {
+    if (val.constructor && val.constructor.name === "RegExp") {
       return (`${val} (Regexp)`);
     }
     // This sequence can be called recursively with 
     // nested objects. Indented for each
     indent++;
     if (indent >= maxDepth) {
-      val = `[Deeper Object below level ${indent}`;
+      val = `[Deeper Object below level ${indent}]`;
     }
     else {
       val = listObject(val);
