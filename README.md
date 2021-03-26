@@ -123,22 +123,25 @@ Parameters are listed once per line.  Entry point, number of seconds since the l
  
 
 example:
-In code file admin.js
+In code file admin.js:
 
 ```
-let trace = require('track-n-trace');
-trace.init(req, './');  
+1  let trace = require('track-n-trace');
+2  trace.init(req, './');  
     ...
-trace.log(id,{tablename:tablename,title:title, level: 'min'});
+20 let id=10;
+21 let table='customers'
+22 let title='Customer file';
+23 trace.log(id,{tablename:tablename,title:title, level: 'min'});
 ```
    
 ------------------------------------------------------------
 ```
-admin.js:60:11 -> 0.006 seconds - level norm  
+admin.js:23:11 -> 0.006 seconds - level norm  
 10
 { tablename: 'customers', title: 'Customer file', }
 ```
-The entry point is the name and line number (60) of the call.
+The entry point is the name and line number (23) of the call.
 The time is the time since the config was refreshed. 
 
 
