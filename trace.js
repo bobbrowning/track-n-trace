@@ -48,6 +48,7 @@ let lineWidth = 60;
 let indent = 0;              // used internally 
 let nextInit = 0;            // next init time in milliseconds
 let initInterval = 5;        // 5 minutes between runs
+let maxString=0;               // Truncate after this many characters. Zero no limit 
 
 /* ***************************************************
 *
@@ -189,7 +190,13 @@ function fixForOutput(val) {
     return ('NaN');
   }
   if (typeof val == 'string') {
+    if (maxString && val.length > maxString) {
+        let sub=val.substring(0,maxString)+'...';
+        return(`'${sub}'`);
+    }
+    else {
     return (`'${val}'`);
+    }
   }
   if (typeof val == 'function') {
     return ('Function');
@@ -311,6 +318,7 @@ function init(req, controldir) {
   lineWidth = 60;
   indent = 0;
   initInterval = 5;  // 5 minutes between runs
+  maxString=0;               // Truncate after this many ch
 
   let testip = null;   // IP tested against
   let logfile = null;  // name of log file
@@ -318,6 +326,8 @@ function init(req, controldir) {
   let note = null;
 
 
+
+ 
 
 
   //  read the config file
@@ -353,6 +363,7 @@ function init(req, controldir) {
       let cmddata = cmd[1].replace(/\s/g, '').toLowerCase();  // dump any white space
       if (cmdname == 'level') { tracelevel = cmddata; }
       if (cmdname == 'source') { traceprog = cmddata; }
+      if (cmdname == 'maxstring') { maxString = cmddata; }
       if (cmdname == 'ip') { testip = cmddata; }
       if (cmdname == 'maxdepth' && cmddata) {
         let data = parseInt(cmddata);
