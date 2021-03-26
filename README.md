@@ -126,22 +126,22 @@ example:
 In code file admin.js:
 
 ```
-1  let trace = require('track-n-trace');
-2  trace.init(req, './');  
+21  let trace = require('track-n-trace');
+22  trace.init(req, './');  
     ...
-20 let id=10;
-21 let table='customers'
-22 let title='Customer file';
-23 trace.log(id,{tablename:tablename,title:title, level: 'min'});
+50 let id=10;
+51 let table='customers'
+52 let title='Customer file';
+53 trace.log(id,{tablename:tablename,title:title, level: 'min'});
 ```
    
 ------------------------------------------------------------
 ```
-admin.js:23:11 -> 0.006 seconds - level norm  
+admin.js:53:11 -> 0.006 seconds - level norm  
 10
 { tablename: 'customers', title: 'Customer file', }
 ```
-The entry point is the name and line number (23) of the call.
+The entry point is the code file name and line number of the call.
 The time is the time since the config was refreshed. 
 
 
