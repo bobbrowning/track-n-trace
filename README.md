@@ -35,16 +35,16 @@ The level command is the basic command. The program will list traces with this l
   
 The commands are:
 
-**level**      Trace.log traces if the level in the call is equal or preceding this. 
-**source**     Name of the javascript file to be traced. If omitted the whole system will be traced.
-**ip**         Trace is only honoured for requests from that IP. If omitted, any IP will cause the trace to output. 
-**log**        Output to this file. If omitted, output goes to the console.  
-**note**       Anything on this line is listed on the output.
-**priority**   Comma separated list of levels to be used instead of the default list.
-**maxdepth**   The maximum depth to which nested objected should be listed.
-**linewidth**  Width of line in characters.  The program will attempt to keep short objects on one line.
-**refresh**    Time before refreshing config in minutes (not needed if trace.init is called once per request). 
-**maxstring** Long strings are runcated to this size before listing. 
+* **level**      Trace.log traces if the level in the call is equal or preceding this. 
+* **source**     Name of the javascript file to be traced. If omitted the whole system will be traced.
+* **ip**         Trace is only honoured for requests from that IP. If omitted, any IP will cause the trace to output. 
+* **log**        Output to this file. If omitted, output goes to the console.  
+* **note**       Anything on this line is listed on the output.
+* **priority**   Comma separated list of levels to be used instead of the default list.
+* **maxdepth**   The maximum depth to which nested objected should be listed.
+* **linewidth**  Width of line in characters.  The program will attempt to keep short objects on one line.
+* **refresh**    Time before refreshing config in minutes (not needed if trace.init is called once per request). 
+* **maxstring** Long strings are runcated to this size before listing. 
 
    
 ###   Examples
