@@ -14,7 +14,7 @@ Trace progress through a Node program.  Trace statements    can be added at any 
 
 5. Traces can be sent to the console or a text file.
 
-6. You can control the depth to which nested objects are listed (object containing objects).
+6. You can control the depth to which nested objects are listed (object containing objects).  You can also chop very large strings if that becomes an issue.
 
 7. The listing includes the javascript file and line number from which it was called.  It also includes the number of elapsed seconds, which may help to identify performance problems.
 
