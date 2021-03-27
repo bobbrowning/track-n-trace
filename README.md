@@ -6,9 +6,9 @@ Trace progress through a Node program.  Trace statements    can be added at any 
 
 1. Traces can be turned on or off in real time under control of the config file (trace.config). You don't need to restart.  So keep  trace statements in the code to help diagnose problems in production. Because.....
 
-2. Traces can be limited to requests from a given IP address.  This is very valuable because if you hit problems in a live site, you can switch tracing on by editing the config file. You can often identify problems without having to restart the app. 
+2. Traces can be limited to requests from a given IP address.  This is very valuable because if you hit problems in a live site, you can switch tracing on by editing the config file. Other users will not be affected and their traces won't get mixed up with yours. You can often identify problems without having to restart the app. 
 
-3. Different levels of tracing means that you can control which statements get listed.  There is are default levels but you can define your own.
+3. Different levels of tracing means that you can control which statements get listed.  There is are default levels but you can define your own.  You can even set it up so only one statement get's traced.
 
 4. Traces can be limited to a one javascript code file      or the whole system.
 
