@@ -6,11 +6,11 @@ Trace progress through a Node program.  Trace statements    can be added at any 
 
 1. Traces can be turned on or off in real time under control of the config file (trace.config). You don't need to restart.  So keep  trace statements in the code to help diagnose problems in production. Because.....
 
-2. Traces can be limited to requests from a given IP address.  This is very valuable because if you hit problems in a live site, you can switch tracing on by editing the config file. Other users will not be affected and their traces won't get mixed up with yours. You can often identify problems without having to restart the app. 
+2. Traces can be limited to requests from a given IP address.  This is very valuable because if you hit problems in a live site, you can switch tracing on without affecting othjer users. Their traces won't get mixed up with yours. You can often identify problems without having to restart the app. 
 
-3. Different levels of tracing means that you can control which statements get listed.  There is are default levels but you can define your own.  You can even set it up so only one statement get's traced.
+3. Different levels of tracing means that you can control which statements get listed.  There is are default levels but you can define your own.  
 
-4. Traces can be limited to a one javascript code file      or the whole system.
+4. Traces can be limited to a one javascript code file, and even in a range of line numbers within that file. 
 
 5. Traces can be sent to the console or a text file.
 
@@ -37,6 +37,7 @@ The commands are:
 
 * **level**      Trace.log traces if the level in the call is equal or preceding this. 
 * **source**     Name of the javascript file to be traced. If omitted the whole system will be traced.
+* **lines**      Only trace call bewteen two line numbers
 * **ip**         Trace is only honoured for requests from that IP. If omitted, any IP will cause the trace to output. 
 * **log**        Output to this file. If omitted, output goes to the console.  
 * **note**       Anything on this line is listed on the output.
@@ -47,55 +48,40 @@ The commands are:
 * **maxstring** Long strings are runcated to this size before listing. 
 
    
-###   Examples
+##   Examples
 
-The minimum control file which results in traces is 
+The minimum control file which results in traces is as follows. If the init() call is not used, the refresh option (below) must be given also. 
 ```
 level=norm
 ```
-To turn traces off simply comment out this line, or rename the file.
+To turn traces off simply comment out this line.
 
-This example shows every option
+This example shows every option. 
 ```
-# This example shows every option for the track-n-trace module
-#  this is used for debugging. Uncomment the level line to switch on
-#  full details on https://github.com/bobbrowning/track-n-trace 
-#level=norm                 # comment out to switch traces off.
-#ip=192.168.0.12            # If omitted, transactions from any IP will be traced
-#source=sourcefile.js       # If omitted from all source files
-#priority=min,bob           # Priority list. If omitted assumed [min,norm,verbose,silly]
-#note=Test 36               # Optional note at beginning of trace listing
-#log=trace.log              # output to file. If omitted goes to concole.
-#linewidth=100              # Number of characters per line. Program will attempt to show 
-                            #    small objects on one line. Default 60.
-#maxdepth=5                 # Depth of nested onjects to be shown (default 3).
-#refresh=1                  # Time before refreshing config in minutes (default 5)
-#maxstring=2000             # Long strings truncated to this size before listing
+level=verbose               # comment out to switch traces off. Set to level required.
+source=suds-list-table.js   # If omitted from all source files
+lines=466,483               # If omitted, from all line numbers
+ip=192.168.0.12             # If omitted, transactions from any IP will be traced
+log=trace.log               # output to file. If omitted goes to console.
+note=Test 36                # Optional note at beginning of trace listing
+priority=min,norm,verbose   # Priority list. If omitted assumed [min,norm,verbose,silly]
+maxdepth=6                  # Depth of nested onjects to be shown (default 3 but can be over-ridden in call).
+linewidth=100               # Number of characters per line. Default 60.  
+refresh=1                   # Time before refreshing config in minutes if no 'init()' call
+maxstring=500               # Long strings truncated to this size before listing
 
 ```
-This example only traces the bespoke level, which might be as little as one call. 
-```
- level=mylevel
- priority=mylevel
-
-```
-
 
 
 ##  Functions 
   
- **trace.log()** -  Normal trace call
+ **trace.init()** - Should be called once per request only.  Reads and processes the the  config file so that changes are recognised.  
+ 
+ It is optional, and if not used, the config file is processed once, then it is re-checked according to the refresh value in the config file (defaulting to 5 minutes). 
 
- **trace.init()** - Required if the IP filtering feature is used. Should be called once per request only.  Reads and processes the the  config file so that changes are recognised. It is also required if the config file is in a non-standard location.  If not used, the config file is processed once, then it is re-checked according to the refresh value in the config file (defaulting to 5 minutes).
+ The call is required if the IP filtering feature is used. It is also required if the config file is in a non-standard location.  
 
-###  trace.log(item1,item2,... {items,...,  options})
-   
-A parameter which is an object may contain options.  
-1.   **level:'xxx',** (if omitted 'norm' is assumed)     
-2.   **break:'x',**  draws a line of [line length] x the entered character to help locate in the output.
-
-Anything else is treated as a data item. So {foo:'bar'}  is the same as '\nfoo,:','bar'
-
+ **trace.log()** -  Normal trace call. PLace withing the code.
 
 ###   trace.init(req,dir)
    
@@ -106,16 +92,46 @@ Anything else is treated as a data item. So {foo:'bar'}  is the same as '\nfoo,:
 example:
 
             let trace=require('track-n-trace');
-            trace.init(req,'./');  // Once per request only. Reads and processes config file.
+            trace.init(req,'./'); 
 
 
-###      examples:  
-  ```
-        trace.log(tablename,id,title);                                  // assumes level='norm'
+###  trace.log(item1,item2,... {items,...,  options})
+   
+A parameter which is an object may contain options.  
+1.   **level:'xxx',** (if omitted 'norm' is assumed)     
+2.   **break:'x',**  draws a line of the entered character to help locate the trace in the output.
+3.   **maxdepth: n.** changes the maximum depth to which objects are listed for that trace only. 
+
+Anything else is treated as a data item. So {foo:'bar'}  is the same as '\nfoo,:','bar'
+
+
+###      Examples:  
+
+Normal call. This lists the Javascript filename, line number and elapsed time plus the three data items.  The level is assumed as 'norm'. 
+```
+        trace.log(tablename,id,title);                                 
+```
+
+Putting the data inside an object.  This lists the same data, but the output is nicer.
+```
         trace.log ({'Name of table': tablename, id:id, title:title });  // nicer output
-        trace.log(tablename,id,{title:title, level:'verbose'});         // level 'verbose'
-        trace.log('start of transaction',{level:'min',break:'#'});      // draws line of hashes
-  ```
+```
+
+Adding options.  In this case the tablename and id are just listed as values. The titlke is inside the object, so the listing is easier to read. The level in this case is changed to 'verbose'.  
+```
+        trace.log(tablename,id,{title:title, level:'verbose'});     
+```
+More options
+```
+        trace.log('start of transaction',{level:'min',break:'#', maxdepth: 3});   
+```
+
+### Handy tip
+
+You can get a lot of output from a program trace, but cut this down by:
+1. Limit output from one Javascript file
+2. Limit the time numbers
+3. Use the custom priority levels feature creatively. For example, you are processing a large file and having issues with one record. if we set the level in the traces as follows: {level: id} where id will contain the record key. In the config file set the level to 'x' and the priority levels to 'min,x'. You will get listings from the 'min' level plus your trace only when id is 'x'. 
 
 ##   Output
 
@@ -143,5 +159,6 @@ admin.js:53:11 -> 0.006 seconds - level norm
 ```
 The entry point is the code file name and line number of the call.
 The time is the time since the config was refreshed. 
+Note that the output is nicer when the data is inside an object.
 
 

@@ -44,11 +44,13 @@ let outstream = undefined;   // Log file
 let stdlevels = ['min', 'norm', 'verbose', 'silly'];  // standard leels
 let levels = stdlevels;      //  levels used (can be changed by the conf file)
 let maxDepth = 3;            // depth of nesed objects listed
+let tempDepth = 3;
 let lineWidth = 60;
 let indent = 0;              // used internally 
 let nextInit = 0;            // next init time in milliseconds
 let initInterval = 5;        // 5 minutes between runs
 let maxString=0;               // Truncate after this many characters. Zero no limit 
+let range=[];
 
 /* ***************************************************
 *
@@ -94,9 +96,10 @@ async function log() {
   caller = callerarray[callerarray.length - 1];
   caller = caller.split(')')[0];
   let temp = caller.split(':');
-  program = temp[0];
-  if (traceprog && program != traceprog) { return; }
-
+  let program = temp[0];
+  let line=Number(temp[1]);
+   if (traceprog && program != traceprog) { return; }
+  if (range && (line < range[0] || line > range[1])) {return;}
   indent = 0;
 
   /* ***********************************************  
@@ -117,6 +120,7 @@ async function log() {
 
   let output = '';
   let item;
+  tempDepth=maxDepth;
 
   // loop now
   for (let i = 0; i < arguments.length; i++) {
@@ -129,6 +133,10 @@ async function log() {
         if (item.level) {
           level = item.level;
           delete item.level;
+        }
+        if (item.maxdepth) {
+          tempDepth = item.maxdepth;
+          delete item.maxdepth;
         }
         if (item.break) {
           output += '\n';
@@ -212,7 +220,7 @@ function fixForOutput(val) {
     // This sequence can be called recursively with 
     // nested objects. Indented for each
     indent++;
-    if (indent >= maxDepth) {
+    if (indent >= tempDepth) {
       val = `[Deeper Object below level ${indent}]`;
     }
     else {
@@ -319,6 +327,7 @@ function init(req, controldir) {
   indent = 0;
   initInterval = 5;  // 5 minutes between runs
   maxString=0;               // Truncate after this many ch
+  range=[];
 
   let testip = null;   // IP tested against
   let logfile = null;  // name of log file
@@ -363,6 +372,11 @@ function init(req, controldir) {
       let cmddata = cmd[1].replace(/\s/g, '').toLowerCase();  // dump any white space
       if (cmdname == 'level') { tracelevel = cmddata; }
       if (cmdname == 'source') { traceprog = cmddata; }
+      if (cmdname == 'lines') { 
+        let temp = cmddata.split(','); 
+        range=[Number(temp[0]),Number(temp[1])];
+        if (range[0]=='NaN' || range[1]=='NaN') {range=[]}; 
+      }
       if (cmdname == 'maxstring') { maxString = cmddata; }
       if (cmdname == 'ip') { testip = cmddata; }
       if (cmdname == 'maxdepth' && cmddata) {
@@ -385,6 +399,12 @@ function init(req, controldir) {
   // allow 'none' to stop tracing
   if (tracelevel == 'none') {
     tracelevel = '';
+  }
+
+// If the trace level is unknown show warning
+ if (tracelevel && !levels.includes(tracelevel)) {
+   console.log(`*****WARNING**** The level in the config file (${tracelevel}) is not one of the priority levels. 
+So no traces will be shown.  To remove traces without this warning, just comment out the level line.`)
   }
 
   // If caled on refresh scedule req will contain false. 
