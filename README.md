@@ -6,7 +6,7 @@ Trace progress through a Node program.  Trace statements    can be added at any 
 
 1. Traces can be turned on or off in real time under control of the config file (trace.config). You don't need to restart.  So keep  trace statements in the code to help diagnose problems in production. Because.....
 
-2. Traces can be limited to requests from a given IP address.  This is very valuable because if you hit problems in a live site, you can switch tracing on without affecting othjer users. Their traces won't get mixed up with yours. You can often identify problems without having to restart the app. 
+2. Traces can be limited to requests from a given IP address.  This is very valuable because if you hit problems in a live site, you can switch tracing on without affecting other users. Their traces won't get mixed up with yours. You can often identify problems without having to restart the app. 
 
 3. Different levels of tracing means that you can control which statements get listed.  There is are default levels but you can define your own.  
 
@@ -31,21 +31,21 @@ The control file is called trace.config. The default location is the root direct
 
 The control file takes the form of lines containing command=data.  The '#' character is used for comments.  To turn off tracing just comment out the 'level' command.
 
-The level command is the basic command. The program will list traces with this level or preceding this in the priority list. The default list is [min,norm,verbose,silly]. 
+The level command is the only command you have to have. The program will list traces with this level or preceding this in the priority list. The default list is [min,norm,verbose,silly]. 
   
 The commands are:
 
 * **level**      Trace.log traces if the level in the call is equal or preceding this. 
 * **source**     Name of the javascript file to be traced. If omitted the whole system will be traced.
-* **lines**      Only trace call bewteen two line numbers
+* **lines**      Only trace call between two line numbers. 
 * **ip**         Trace is only honoured for requests from that IP. If omitted, any IP will cause the trace to output. 
 * **log**        Output to this file. If omitted, output goes to the console.  
 * **note**       Anything on this line is listed on the output.
 * **priority**   Comma separated list of levels to be used instead of the default list.
-* **maxdepth**   The maximum depth to which nested objected should be listed.
+* **maxdepth**   The maximum depth to which nested objected should be listed (default 3).
 * **linewidth**  Width of line in characters.  The program will attempt to keep short objects on one line.
 * **refresh**    Time before refreshing config in minutes (not needed if trace.init is called once per request). 
-* **maxstring** Long strings are runcated to this size before listing. 
+* **maxstring**  Long strings are runcated to this size before listing. 
 
    
 ##   Examples
@@ -81,7 +81,7 @@ maxstring=500               # Long strings truncated to this size before listing
 
  The call is required if the IP filtering feature is used. It is also required if the config file is in a non-standard location.  
 
- **trace.log()** -  Normal trace call. PLace withing the code.
+ **trace.log()** -  Normal trace call. Place withing the code.
 
 ###   trace.init(req,dir)
    
@@ -114,24 +114,24 @@ Normal call. This lists the Javascript filename, line number and elapsed time pl
 
 Putting the data inside an object.  This lists the same data, but the output is nicer.
 ```
-        trace.log ({'Name of table': tablename, id:id, title:title });  // nicer output
+        trace.log ({table: tablename, id:id, title:title });  
 ```
 
-Adding options.  In this case the tablename and id are just listed as values. The titlke is inside the object, so the listing is easier to read. The level in this case is changed to 'verbose'.  
+Adding options.  In this case the tablename and id are just listed as values. The title is inside the object, so the listing is easier to read. The level in this case is changed to 'verbose'.  
 ```
         trace.log(tablename,id,{title:title, level:'verbose'});     
 ```
 More options
 ```
-        trace.log('start of transaction',{level:'min',break:'#', maxdepth: 3});   
+        trace.log({start: inputs, level:'min',break:'#', maxdepth: 3});   
 ```
 
-### Handy tip
+### Keeping the output focussed
 
 You can get a lot of output from a program trace, but cut this down by:
 1. Limit output from one Javascript file
-2. Limit the time numbers
-3. Use the custom priority levels feature creatively. For example, you are processing a large file and having issues with one record. if we set the level in the traces as follows: {level: id} where id will contain the record key. In the config file set the level to 'x' and the priority levels to 'min,x'. You will get listings from the 'min' level plus your trace only when id is 'x'. 
+2. Limit the time numbers as well
+3. Use the custom priority levels feature creatively. For example, you are processing a large file and having issues with one record - say record key = 3556. Set the level in the traces you are interested in as follows: {level: id} where id is a variable containing the record key. In the config file set the level to 3556 and the priority levels to (say) 'min,3556'. You will get listings from the 'min' level plus your traces only for record 3556. 
 
 ##   Output
 
@@ -148,14 +148,14 @@ In code file admin.js:
 50 let id=10;
 51 let table='customers'
 52 let title='Customer file';
-53 trace.log(id,{tablename:tablename,title:title, level: 'min'});
+53 trace.log(id,{table:tablename,title:title, level: 'min'});
 ```
    
 ------------------------------------------------------------
 ```
-admin.js:53:11 -> 0.006 seconds - level norm  
+admin.js:53:11 -> 0.006 seconds - level min  
 10
-{ tablename: 'customers', title: 'Customer file', }
+{ table: 'customers', title: 'Customer file', }
 ```
 The entry point is the code file name and line number of the call.
 The time is the time since the config was refreshed. 
