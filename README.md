@@ -130,7 +130,7 @@ More options
 
 You can get a lot of output from a program trace, but cut this down by:
 1. Limit output from one Javascript file
-2. Limit the time numbers as well
+2. Limit the line numbers as well
 3. Use the custom priority levels feature creatively. For example, you are processing a large file and having issues with one record - say record key = 3556. Set the level in the traces you are interested in as follows: {level: id} where id is a variable containing the record key. In the config file set the level to 3556 and the priority levels to (say) 'min,3556'. You will get listings from the 'min' level plus your traces only for record 3556. 
 
 ##   Output
