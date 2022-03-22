@@ -31,8 +31,14 @@
 *
 **************************************************** */
 
+const fs = require('fs');
+ 
+
 exports.log = log;
 exports.init = init;
+exports.error = error;
+exports.warning = warning;
+exports.fatal = fatal;
 
 
 // Local data
@@ -51,6 +57,8 @@ let nextInit = 0;            // next init time in milliseconds
 let initInterval = 5;        // 5 minutes between runs
 let maxString=0;               // Truncate after this many characters. Zero no limit 
 let range=[];
+let errstream = fs.createWriteStream('trace.err', { flags: 'a' });
+ 
 
 /* ***************************************************
 *
@@ -190,11 +198,11 @@ ${caller} -> ${lapse} seconds - level ${level}  ${output}`;
  *********************************************** */
 
 function fixForOutput(val) {
-  //  console.log(171,val, typeof val);
-  if (val == null) {
+ // console.log(171,val, typeof val);
+  if (val === null) {
     return ('null');
   }
-  if (val == NaN) {
+  if (val === NaN) {
     return ('NaN');
   }
   if (typeof val == 'string') {
@@ -214,8 +222,14 @@ function fixForOutput(val) {
     return (val);
   }
   if (typeof val == 'object') {
-    if (val.constructor && val.constructor.name === "RegExp") {
-      return (`${val} (Regexp)`);
+  //  console.log('\n>>>>>',val,val.constructor.name);
+    if (val.constructor && (
+      val.constructor.name !== "Object"
+      && 
+      val.constructor.name !== "Array"
+      )
+     ) {
+      return (`[${val.constructor.name}, ${val}]`);
     }
     // This sequence can be called recursively with 
     // nested objects. Indented for each
@@ -375,7 +389,9 @@ function init(req, controldir) {
       if (cmdname == 'lines') { 
         let temp = cmddata.split(','); 
         range=[Number(temp[0]),Number(temp[1])];
-        if (range[0]=='NaN' || range[1]=='NaN') {range=[]}; 
+        if (isNaN(range[1])  || range[1] < range[0]) {range[1]=range[0]}
+        if (range[0]=='NaN') {range=[]}; 
+        console.log(range)
       }
       if (cmdname == 'maxstring') { maxString = cmddata; }
       if (cmdname == 'ip') { testip = cmddata; }
@@ -502,7 +518,57 @@ in the app at the start of the transaction.
   return (`OK`);
 }
 
+async function errwarn(lev,args) {
 
+  
+ /* ***********************************************  
+ *
+ * work out the code file and line number of the trace call
+ * by pretending there is an error and scanning error text 
+ * if the config is set to only trace one program, return 
+ * if this is not the program.
+ *
+ *********************************************** */
+  error = new Error();
+  let stack = error.stack.split(' at ');
+  let caller = '';
+  for (let i = 1; i < stack.length; i++) {
+    if (!stack[i].includes('/trace.js')) {
+      caller = stack[i];
+      break;
+    }
+  }
+  callerarray = caller.split('/');
+  caller = callerarray[callerarray.length - 1];
+  caller = caller.split(')')[0];
+  let temp = caller.split(':');
+  let program = temp[0];
+  let line=Number(temp[1]);
+  indent = 0;
 
+  let date = new Date();
+  let msecs=date.getTime();
+  let displaydate = date.toString();
+ 
+  let msg=`${program}:${line}, `;
+  let i=0;
+  while (args[i]) {msg+=args[i++]+', '}
+  console.log(`${lev} ${displaydate}: ${msg}`);
+  msg=msg.replace(/\n/g, '\\n')
+  await errstream.write(`${lev}, ${msecs}, ${msg} \n`);
+  return;
+}
 
+async function warning() {
+  return errwarn('Warning',arguments);
+}
+async function error() {
+  return errwarn('Error',arguments);
+}
 
+async function fatal() {
+  await errwarn(`
+  ************************* Fatal Error ******************
+   `,arguments);
+   
+}

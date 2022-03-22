@@ -1,6 +1,6 @@
 {
   "_from": "track-n-trace",
-  "_id": "track-n-trace@1.2.1",
+  "_id": "track-n-trace@1.4.0",
   "_inBundle": false,
   "_integrity": "sha512-+m9scus5KfIMxy5bGmet2ZzoNEDQnAVvGZ+kueNE9LDUG3Dxkry8xMSoNc6O5NotM0kxlr4WSDR0MXxQeDhEMA==",
   "_location": "/track-n-trace",
@@ -50,5 +50,5 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "1.2.10"
+  "version": "1.4.0"
 }

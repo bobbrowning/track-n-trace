@@ -37,7 +37,7 @@ The commands are:
 
 * **level**      Trace.log traces if the level in the call is equal or preceding this. 
 * **source**     Name of the javascript file to be traced. If omitted the whole system will be traced.
-* **lines**      Only trace call between two line numbers. 
+* **lines**      Only trace call from one line or between two line numbers.   Number or range (min,max) 
 * **ip**         Trace is only honoured for requests from that IP. If omitted, any IP will cause the trace to output. 
 * **log**        Output to this file. If omitted, output goes to the console.  
 * **note**       Anything on this line is listed on the output.
@@ -130,7 +130,7 @@ More options
 
 You can get a lot of output from a program trace, but cut this down by:
 1. Limit output from one Javascript file
-2. Limit the line numbers as well
+2. Limit the time numbers as well
 3. Use the custom priority levels feature creatively. For example, you are processing a large file and having issues with one record - say record key = 3556. Set the level in the traces you are interested in as follows: {level: id} where id is a variable containing the record key. In the config file set the level to 3556 and the priority levels to (say) 'min,3556'. You will get listings from the 'min' level plus your traces only for record 3556. 
 
 ##   Output
