@@ -1,35 +1,39 @@
 {
-  "_from": "track-n-trace",
-  "_id": "track-n-trace@1.4.0",
+  "_args": [
+    [
+      "track-n-trace@1.2.13",
+      "/home/bob/ex/suds/v2.1"
+    ]
+  ],
+  "_from": "track-n-trace@1.2.13",
+  "_id": "track-n-trace@1.2.13",
   "_inBundle": false,
-  "_integrity": "sha512-+m9scus5KfIMxy5bGmet2ZzoNEDQnAVvGZ+kueNE9LDUG3Dxkry8xMSoNc6O5NotM0kxlr4WSDR0MXxQeDhEMA==",
+  "_integrity": "sha512-K1TH+jGTrCpyvu32HFZdQFYy70eX/flUQz7ezBWY1i1hPMEA9AD6TjeFpYfvBeRr3dGyL0d3+5bX+ZfmIr378A==",
   "_location": "/track-n-trace",
   "_phantomChildren": {},
   "_requested": {
-    "type": "tag",
+    "type": "version",
     "registry": true,
-    "raw": "track-n-trace",
+    "raw": "track-n-trace@1.2.13",
     "name": "track-n-trace",
     "escapedName": "track-n-trace",
-    "rawSpec": "",
+    "rawSpec": "1.2.13",
     "saveSpec": null,
-    "fetchSpec": "latest"
+    "fetchSpec": "1.2.13"
   },
   "_requiredBy": [
-    "#USER",
     "/"
   ],
-  "_resolved": "https://registry.npmjs.org/track-n-trace/-/track-n-trace-1.2.1.tgz",
+  "_resolved": "https://registry.npmjs.org/track-n-trace/-/track-n-trace-1.2.13.tgz",
   "_shasum": "e23d1b4bc0579078d2d9d1eb006c3f44587314db",
-  "_spec": "track-n-trace",
-  "_where": "/home/bob742/node-test/sails/suds2",
+  "_spec": "1.2.12",
+  "_where": "/home/bob/ex/suds/v2.1",
   "author": {
     "name": "Bob Browning"
   },
   "bugs": {
     "url": "https://github.com/bobbrowning/track-n-trace/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "request-ip": "^2.1.3"
   },
@@ -50,5 +54,5 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "version": "1.4.0"
+  "version": "1.2.13"
 }

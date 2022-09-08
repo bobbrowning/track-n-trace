@@ -37,7 +37,7 @@ The commands are:
 
 * **level**      Trace.log traces if the level in the call is equal or preceding this. 
 * **source**     Name of the javascript file to be traced. If omitted the whole system will be traced.
-* **lines**      Only trace call from one line or between two line numbers.   Number or range (min,max) 
+* **lines**      Only trace call between two line numbers. 
 * **ip**         Trace is only honoured for requests from that IP. If omitted, any IP will cause the trace to output. 
 * **log**        Output to this file. If omitted, output goes to the console.  
 * **note**       Anything on this line is listed on the output.

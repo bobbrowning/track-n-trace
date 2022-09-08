@@ -39,6 +39,8 @@ exports.init = init;
 exports.error = error;
 exports.warning = warning;
 exports.fatal = fatal;
+exports.start = start;
+exports.stop = stop;
 
 
 // Local data
@@ -60,6 +62,47 @@ let range=[];
 let errstream = fs.createWriteStream('trace.err', { flags: 'a' });
  
 
+function start(level) {
+  if (level) {tracelevel=level} else {tracelevel='norm'}
+  let error = new Error();
+  let stack = error.stack.split(' at ');
+  let caller = '';
+  for (let i = 1; i < stack.length; i++) {
+    if (!stack[i].includes('/trace.js')) {
+      caller = stack[i];
+      break;
+    }
+  }
+  callerarray = caller.split('/');
+  caller = callerarray[callerarray.length - 1];
+  caller = caller.split(')')[0];
+  let temp = caller.split(':');
+  let program = temp[0];
+  let line=Number(temp[1]);
+  console.log(`${program}:${line} - Tracing started by trace.start() at level: ${tracelevel}`)
+  return; 
+}
+
+function stop () {
+  tracelevel='';
+  let error = new Error();
+  let stack = error.stack.split(' at ');
+  let caller = '';
+  for (let i = 1; i < stack.length; i++) {
+    if (!stack[i].includes('/trace.js')) {
+      caller = stack[i];
+      break;
+    }
+  }
+  callerarray = caller.split('/');
+  caller = callerarray[callerarray.length - 1];
+  caller = caller.split(')')[0];
+  let temp = caller.split(':');
+  let program = temp[0];
+  let line=Number(temp[1]);
+  console.log(`${program}:${line} - Tracing stopped by trace.stop()`)
+  return;
+}
 /* ***************************************************
 *
 *   trace.log(item1,item2,... {options});
@@ -166,12 +209,12 @@ async function log() {
   }
 
   //  Trace heading  - lapse is seconds since init.
-  let lapse = (Date.now() - tracetime) / 1000;
+  let lapse = (Date.now() - tracetime)/1000;
   lapse = lapse.toFixed(3);
 
   let final = `
 ${'-'.repeat(lineWidth)}
-${caller} -> ${lapse} seconds - level ${level}  ${output}`;
+${caller} -> ${lapse} secs - level ${level}  ${output}`;
 
   // Now see if we should output it... 
   // not ideal, but the options might come at the end. 
@@ -391,7 +434,7 @@ function init(req, controldir) {
         range=[Number(temp[0]),Number(temp[1])];
         if (isNaN(range[1])  || range[1] < range[0]) {range[1]=range[0]}
         if (range[0]=='NaN') {range=[]}; 
-        console.log(range)
+  //      console.log(range)
       }
       if (cmdname == 'maxstring') { maxString = cmddata; }
       if (cmdname == 'ip') { testip = cmddata; }
@@ -547,10 +590,13 @@ async function errwarn(lev,args) {
   indent = 0;
 
   let date = new Date();
+  let lapse = (Date.now() - tracetime)/1000;
+  lapse = lapse.toFixed(3);
+
   let msecs=date.getTime();
   let displaydate = date.toString();
  
-  let msg=`${program}:${line}, `;
+  let msg=`${program}:${line} -> ${lapse} secs, `;
   let i=0;
   while (args[i]) {msg+=args[i++]+', '}
   console.log(`${lev} ${displaydate}: ${msg}`);
